@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Oráculo Tricolor</title>
+    <style>
+        /* CSS - O Estilo do Grêmio */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #0d8cd5; /* Azul Grêmio */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0;
+            padding: 20px;
+            color: white;
+        }
+
+        h1 {
+            text-transform: uppercase;
+            text-shadow: 2px 2px 0px #000;
+            margin-bottom: 40px;
+        }
+
+        /* Card do Placar */
+        .card {
+            background-color: white;
+            color: black;
+            width: 400px;
+            border-radius: 10px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+            overflow: hidden;
+            margin-bottom: 20px;
+            border-left: 10px solid black; /* Detalhe Preto */
+        }
+
+        .card-header {
+            background-color: #eee;
+            padding: 10px;
+            text-align: center;
+            font-weight: bold;
+            color: #555;
+            font-size: 0.9em;
+        }
+
+        .placar-container {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .time {
+            text-align: center;
+            width: 40%;
+        }
+
+        .nome-time {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+            font-size: 1.2em;
+        }
+
+        .gols {
+            font-size: 3em;
+            font-weight: bold;
+            color: #0d8cd5; /* Gols em Azul */
+        }
+
+        .x {
+            color: #ccc;
+            font-size: 1.5em;
+        }
+
+    </style>
+</head>
+<body>
+
+    <h1>⚽ Oráculo Tricolor 🇪🇪</h1>
+
+    <div id="lista-jogos">
+        <p style="text-align: center;">Carregando palpites...</p>
+    </div>
+
+    <script>
+        // JAVASCRIPT - A Lógica
+        
+        // 1. Chama a sua API Java (que conecta no Oracle)
+        fetch('/palpites')
+            .then(response => response.json()) // Converte o texto para Objeto
+            .then(listaDePalpites => {
+                
+                const divLista = document.getElementById('lista-jogos');
+                divLista.innerHTML = ''; // Limpa a mensagem de "Carregando"
+
+                // 2. Para cada jogo que veio do banco, cria um Card
+                listaDePalpites.forEach(palpite => {
+                    
+                    // Monta o HTML do card dinamicamente
+                    const htmlDoCard = `
+                        <div class="card">
+                            <div class="card-header">
+                                Data do Jogo: ${palpite.dataJogo}
+                            </div>
+                            <div class="placar-container">
+                                <div class="time">
+                                    <span class="nome-time">GRÊMIO</span>
+                                    <span class="gols">${palpite.golsGremio}</span>
+                                </div>
+                                <div class="x">X</div>
+                                <div class="time">
+                                    <span class="nome-time">${palpite.adversario}</span>
+                                    <span class="gols">${palpite.golsAdversario}</span>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+
+                    // Adiciona o card na tela
+                    divLista.innerHTML += htmlDoCard;
+                });
+            })
+            .catch(erro => {
+                console.error('Deu erro:', erro);
+                document.getElementById('lista-jogos').innerHTML = '<p>Erro ao carregar dados.</p>';
+            });
+    </script>
+
+</body>
+</html>
