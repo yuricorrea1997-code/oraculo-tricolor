@@ -1,7 +1,7 @@
 version: '3.8'
 
 services:
-  # --- O BANCO ORACLE ---
+  # --- O BANCO ORACLE d ---
   oracle-db:
     image: gvenzl/oracle-xe:21-slim-faststart
     container_name: meu-oracle
