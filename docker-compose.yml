@@ -1,0 +1,34 @@
+version: '3.8'
+
+services:
+  # --- O CRAQUE DO TIME: BANCO ORACLE ---
+  oracle-db:
+    image: gvenzl/oracle-xe:21-slim-faststart
+    container_name: meu-oracle
+    ports:
+      - "1521:1521"
+    environment:
+      - ORACLE_PASSWORD=senha123
+      - APP_USER=usuario
+      - APP_USER_PASSWORD=senha123
+    volumes:
+      - oracle-data:/opt/oracle/oradata
+
+  # --- O SEU SITE ---
+  oraculo-app:
+    build: .
+    container_name: meu-site
+    ports:
+      - "8081:8081"
+    environment:
+      # AQUI ESTÁ A MÁGICA: Não usamos 'localhost', usamos o nome do serviço 'oracle-db'
+      - SPRING_DATASOURCE_URL=jdbc:oracle:thin:@oracle-db:1521/XE
+      - SPRING_DATASOURCE_USERNAME=usuario
+      - SPRING_DATASOURCE_PASSWORD=senha123
+      # Diz pro Hibernate criar a tabela se ela não existir
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+    depends_on:
+      - oracle-db
+
+volumes:
+  oracle-data:
